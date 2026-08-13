@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>سیستم پیگیری ورود حامل‌ها</title>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --text: #0f172a;
+      --text-light: #64748b;
+      --border: #e2e8f0;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --info: #3b82f6;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Vazirmatn', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding-bottom: 80px;
+    }
+
+    /* هدر */
+    .header {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      padding: 18px 16px;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .header h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .header p {
+      font-size: 0.8rem;
+      opacity: 0.9;
+      margin-top: 4px;
+    }
+
+    /* محتوای اصلی */
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    /* کارت‌های آماری */
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 16px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      border: 1px solid var(--border);
+    }
+
+    .stat-card .number {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .stat-card .label {
+      font-size: 0.8rem;
+      color: var(--text-light);
+      margin-top: 4px;
+    }
+
+    /* لیست کارت‌ها */
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      border: 1px solid var(--border);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .card-title {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .plate {
+      background: #f1f5f9;
+      padding: 3px 10px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-weight: 600;
+      font-size: 0.9rem;
+      letter-spacing: 0.5px;
+    }
+
+    .card-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: var(--text-light);
+    }
+
+    .card-body div strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    /* نشان وضعیت */
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: white;
+    }
+    .badge-success { background: var(--success); }
+    .badge-warning { background: var(--warning); }
+    .badge-info    { background: var(--info); }
+    .badge-default { background: #94a3b8; }
+
+    /* اعلان */
+    .announce-card {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .announce-date {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      margin-bottom: 6px;
+    }
+
+    .announce-text {
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* پیام خالی و لودینگ */
+    .message {
+      text-align: center;
+      padding: 50px 20px;
+      color: var(--text-light);
+      font-size: 1rem;
+    }
+
+    .error { color: var(--danger); }
+
+    /* ناوبری پایین */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 0;
+      z-index: 100;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 10px;
+      color: var(--text-light);
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      background: none;
+    }
+
+    .nav-item.active {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .nav-item svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    /* مخفی کردن بخش‌ها */
+    .section { display: none; }
+    .section.active { display: block; }
+
+    @media (min-width: 600px) {
+      .stats { grid-template-columns: repeat(4, 1fr); }
+      .card-body { grid-template-columns: repeat(3, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>سیستم پیگیری ورود حامل‌ها</h1>
+    <p id="last-update">در حال بارگذاری...</p>
+  </div>
+
+  <div class="container">
+
+    <!-- ==================== لیست بار شده‌ها ==================== -->
+    <div id="section-loaded" class="section active">
+      <div class="stats" id="stats-loaded">
+        <div class="stat-card">
+          <div class="number" id="count-loaded">-</div>
+          <div class="label">کل بار شده‌ها</div>
+        </div>
+      </div>
+      <div class="list" id="list-loaded">
+        <div class="message">در حال بارگذاری...</div>
+      </div>
+    </div>
+
+    <!-- ==================== نوبت ایرانی ==================== -->
+    <div id="section-iranian" class="section">
+      <div class="stats">
+        <div class="stat-card">
+          <div class="number" id="count-loading">-</div>
+          <div class="label">در حال بارگیری</div>
+        </div>
+        <div class="stat-card">
+          <div class="number" id="count-waiting">-</div>
+          <div class="label">منتظر بار</div>
+        </div>
+      </div>
+      <div class="list" id="list-iranian">
+        <div class="message">در حال بارگذاری...</div>
+      </div>
+    </div>
+
+    <!-- ==================== ورود عراقی ==================== -->
+    <div id="section-iraqi" class="section">
+      <div class="list" id="list-iraqi">
+        <div class="message">در حال بارگذاری...</div>
+      </div>
+    </div>
+
+    <!-- ==================== اعلان‌ها ==================== -->
+    <div id="section-announcements" class="section">
+      <div id="list-announcements">
+        <div class="message">در حال بارگذاری...</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ناوبری پایین -->
+  <div class="bottom-nav">
+    <button class="nav-item active" onclick="showSection('loaded')">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      بار شده‌ها
+    </button>
+    <button class="nav-item" onclick="showSection('iranian')">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      نوبت ایرانی
+    </button>
+    <button class="nav-item" onclick="showSection('iraqi')">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+      ورود عراقی
+    </button>
+    <button class="nav-item" onclick="showSection('announcements')">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+      اعلان‌ها
+    </button>
+  </div>
+
+  <script>
+    const API_BASE = "https://script.google.com/macros/s/AKfycbyCPE6kkjgLVb-QeedGxxZKr-PWIaLgJYi4lkcefwn4VbrYFtv0PIH0cfYuotiEjunIXA/exec";
+
+    function getStatusBadge(status) {
+      if (!status) return `<span class="badge badge-default">نامشخص</span>`;
+      const s = status.toString().trim();
+      if (s === "بار شده") return `<span class="badge badge-success">${s}</span>`;
+      if (s === "در حال بارگیری") return `<span class="badge badge-info">${s}</span>`;
+      if (s === "منتظر بار") return `<span class="badge badge-warning">${s}</span>`;
+      return `<span class="badge badge-default">${s}</span>`;
+    }
+
+    function showSection(name) {
+      // مخفی کردن همه بخش‌ها
+      document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+
+      // نمایش بخش انتخاب‌شده
+      document.getElementById('section-' + name).classList.add('active');
+      event.currentTarget.classList.add('active');
+
+      // بارگذاری داده مربوطه
+      if (name === 'loaded') loadLoaded();
+      if (name === 'iranian') loadIranian();
+      if (name === 'iraqi') loadIraqi();
+      if (name === 'announcements') loadAnnouncements();
+    }
+
+    async function fetchData(type) {
+      const res = await fetch(`\( {API_BASE}?type= \){type}`);
+      return await res.json();
+    }
+
+    // ========== بار شده‌ها ==========
+    async function loadLoaded() {
+      const container = document.getElementById('list-loaded');
+      container.innerHTML = `<div class="message">در حال بارگذاری...</div>`;
+
+      try {
+        const data = await fetchData('loaded');
+        document.getElementById('count-loaded').textContent = data.length;
+
+        if (!data.length) {
+          container.innerHTML = `<div class="message">هیچ ماشین بار شده‌ای وجود ندارد</div>`;
+          return;
+        }
+
+        let html = '';
+        data.forEach(row => {
+          html += `
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">${row["نام راننده"] || "-"}</div>
+                <span class="plate">${row["شماره پلاک"] || "-"}</span>
+              </div>
+              <div class="card-body">
+                <div><strong>مقصد:</strong> ${row["مقصد"] || "-"}</div>
+                <div><strong>تماس:</strong> ${row["شماره تماس"] || "-"}</div>
+                <div><strong>تاریخ:</strong> ${row["تاریخ ورود"] || "-"}</div>
+                <div><strong>ساعت:</strong> ${row["ساعت ورود"] || "-"}</div>
+              </div>
+              <div style="margin-top:10px">${getStatusBadge(row["وضعیت"])}</div>
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+        updateTime();
+      } catch (e) {
+        container.innerHTML = `<div class="message error">خطا در دریافت اطلاعات</div>`;
+      }
+    }
+
+    // ========== نوبت ایرانی ==========
+    async function loadIranian() {
+      const container = document.getElementById('list-iranian');
+      container.innerHTML = `<div class="message">در حال بارگذاری...</div>`;
+
+      try {
+        const data = await fetchData('iranian');
+
+        const loadingCount = data.filter(r => r["وضعیت"] === "در حال بارگیری").length;
+        const waitingCount = data.filter(r => r["وضعیت"] === "منتظر بار").length;
+
+        document.getElementById('count-loading').textContent = loadingCount;
+        document.getElementById('count-waiting').textContent = waitingCount;
+
+        if (!data.length) {
+          container.innerHTML = `<div class="message">لیست نوبت خالی است</div>`;
+          return;
+        }
+
+        let html = '';
+        data.forEach(row => {
+          html += `
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">
+                  <span style="background:#e0e7ff;color:#3730a3;padding:2px 8px;border-radius:6px;font-size:0.8rem;margin-left:8px">${row["ردیف"]}</span>
+                  ${row["نام راننده"] || "-"}
+                </div>
+                <span class="plate">${row["شماره پلاک"] || "-"}</span>
+              </div>
+              <div class="card-body">
+                <div><strong>مقصد:</strong> ${row["مقصد"] || "-"}</div>
+                <div><strong>تماس:</strong> ${row["شماره تماس"] || "-"}</div>
+                <div><strong>تاریخ:</strong> ${row["تاریخ ورود"] || "-"}</div>
+                <div><strong>ساعت:</strong> ${row["ساعت ورود"] || "-"}</div>
+              </div>
+              <div style="margin-top:10px">${getStatusBadge(row["وضعیت"])}</div>
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+        updateTime();
+      } catch (e) {
+        container.innerHTML = `<div class="message error">خطا در دریافت اطلاعات</div>`;
+      }
+    }
+
+    // ========== ورود عراقی ==========
+    async function loadIraqi() {
+      const container = document.getElementById('list-iraqi');
+      container.innerHTML = `<div class="message">در حال بارگذاری...</div>`;
+
+      try {
+        const data = await fetchData('iraqi');
+
+        if (!data.length) {
+          container.innerHTML = `<div class="message">لیست ورود عراقی خالی است</div>`;
+          return;
+        }
+
+        let html = '';
+        data.forEach(row => {
+          html += `
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">${row["نام راننده"] || "-"}</div>
+                <span class="plate">${row["شماره پلاک"] || "-"}</span>
+              </div>
+              <div class="card-body">
+                <div><strong>تاریخ ورود به ایران:</strong> ${row["تاریخ ورود به ایران"] || "-"}</div>
+              </div>
+              <div style="margin-top:10px">${getStatusBadge(row["وضعیت"])}</div>
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+        updateTime();
+      } catch (e) {
+        container.innerHTML = `<div class="message error">خطا در دریافت اطلاعات</div>`;
+      }
+    }
+
+    // ========== اعلان‌ها ==========
+    async function loadAnnouncements() {
+      const container = document.getElementById('list-announcements');
+      container.innerHTML = `<div class="message">در حال بارگذاری...</div>`;
+
+      try {
+        const data = await fetchData('announcements');
+
+        if (!data.length) {
+          container.innerHTML = `<div class="message">هیچ اعلانی وجود ندارد</div>`;
+          return;
+        }
+
+        let html = '';
+        data.forEach(row => {
+          html += `
+            <div class="announce-card">
+              <div class="announce-date">${row["تاریخ"] || ""}</div>
+              <div class="announce-text">${row["اعلان"] || ""}</div>
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+        updateTime();
+      } catch (e) {
+        container.innerHTML = `<div class="message error">خطا در دریافت اطلاعات</div>`;
+      }
+    }
+
+    function updateTime() {
+      document.getElementById('last-update').textContent = 
+        "آخرین به‌روزرسانی: " + new Date().toLocaleString('fa-IR');
+    }
+
+    // بارگذاری اولیه
+    loadLoaded();
+  </script>
+</body>
+</html>
