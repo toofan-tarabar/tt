@@ -22,7 +22,7 @@
 }
 
 *{box-sizing:border-box;}
-html,body{margin:0;padding:0;}
+html,body{margin:0;padding:0;width:100%;overflow-x:hidden;}
 body{
   background:var(--bg);
   color:var(--text-primary);
@@ -36,11 +36,13 @@ body{
   margin:0 auto;
   display:flex;
   min-height:100vh;
+  width:100%;
 }
 
-/* ---------- Sidebar ---------- */
+/* ---------- Sidebar (mobile-first: off-canvas drawer by default) ---------- */
 .sidebar{
   width:250px;
+  max-width:80vw;
   flex-shrink:0;
   background:var(--surface);
   border-left:1px solid var(--border);
@@ -48,7 +50,21 @@ body{
   display:flex;
   flex-direction:column;
   gap:4px;
+  position:fixed;
+  inset-inline-end:0;
+  top:0;
+  bottom:0;
+  transform:translateX(100%);
+  transition:transform .25s ease;
+  z-index:50;
+  box-shadow:-4px 0 16px rgba(0,0,0,.08);
+  overflow-y:auto;
 }
+.sidebar.open{transform:translateX(0);}
+.overlay{
+  display:none;position:fixed;inset:0;background:rgba(16,24,40,.35);z-index:40;
+}
+.overlay.open{display:block;}
 .brand{
   display:flex;
   align-items:center;
@@ -98,6 +114,8 @@ body{
   flex:1;
   padding:22px 26px 40px;
   min-width:0;
+  max-width:100%;
+  overflow-x:hidden;
 }
 .topbar{
   display:flex;align-items:center;justify-content:space-between;
@@ -118,11 +136,12 @@ body{
 @keyframes spin{to{transform:rotate(360deg);}}
 
 .menu-toggle{
-  display:none;
+  display:flex;
   background:var(--surface);border:1px solid var(--border);
   border-radius:9px;width:38px;height:38px;
   align-items:center;justify-content:center;
   cursor:pointer;
+  flex-shrink:0;
 }
 
 /* ---------- Cards / stats ---------- */
@@ -274,25 +293,22 @@ body{
 }
 
 /* ---------- Responsive ---------- */
-@media (max-width: 900px){
-  .panel-grid{grid-template-columns:1fr;}
-  .stat-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
-}
-@media (max-width: 760px){
+/* حالت پیش‌فرض بالا مخصوص موبایله (منو کشویی). این بخش فقط برای صفحه‌های واقعا بزرگ، منو رو ثابت و کنار صفحه می‌کنه. */
+@media (min-width: 900px){
   .sidebar{
-    position:fixed;inset-inline-end:0;top:0;bottom:0;
-    transform:translateX(100%);
-    transition:transform .25s ease;
-    z-index:50;box-shadow:-4px 0 16px rgba(0,0,0,.08);
+    position:static;
+    transform:none;
+    box-shadow:none;
+    max-width:none;
   }
-  .sidebar.open{transform:translateX(0);}
-  .menu-toggle{display:flex;}
-  .main{padding:16px 14px 32px;}
+  .menu-toggle{display:none;}
+  .overlay{display:none !important;}
+}
+
+@media (max-width: 899px){
+  .panel-grid{grid-template-columns:1fr;}
   .stat-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+  .main{padding:16px 14px 32px;}
   .stat-value{font-size:18px;}
   .record-meta{gap:5px 12px;}
-  .overlay{
-    display:none;position:fixed;inset:0;background:rgba(16,24,40,.35);z-index:40;
-  }
-  .overlay.open{display:block;}
 }
