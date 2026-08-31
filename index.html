@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نوبت بارگیری LPG طوفان ترابر</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
+<link rel="stylesheet" href="style.css?v=6">
+</head>
+<body>
+
+<div class="app">
+  <!-- Sidebar (desktop: side panel / mobile: bottom nav bar) -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-icon"><i class="ti ti-flame"></i></div>
+      <div>
+        <div class="brand-title">نوبت بارگیری LPG</div>
+        <div class="brand-sub">طوفان ترابر</div>
+      </div>
+    </div>
+
+    <button class="nav-item active" data-page="dashboard">
+      <i class="ti ti-layout-dashboard"></i> <span class="nav-label">داشبورد</span>
+    </button>
+    <button class="nav-item" data-page="iranian">
+      <i class="ti ti-flag"></i> <span class="nav-label">نوبت ایرانی</span>
+    </button>
+    <button class="nav-item" data-page="iraqi">
+      <i class="ti ti-map-pin"></i> <span class="nav-label">ورود عراقی</span>
+    </button>
+    <button class="nav-item" data-page="announcements">
+      <i class="ti ti-speakerphone"></i> <span class="nav-label">اعلان‌ها</span>
+      <span class="nav-badge" id="announce-badge" style="display:none;">0</span>
+    </button>
+    <button class="nav-item" data-page="loaded">
+      <i class="ti ti-package"></i> <span class="nav-label">بار شده‌ها</span>
+    </button>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <div class="topbar">
+      <div style="flex:1;">
+        <h1 class="page-title" id="page-title">داشبورد</h1>
+        <p class="page-sub" id="page-sub">نوبت بارگیری LPG سایت طوفان ترابر</p>
+      </div>
+      <div class="topbar-actions">
+        <button class="refresh-btn" id="refresh-btn"><i class="ti ti-refresh"></i> به‌روزرسانی</button>
+      </div>
+    </div>
+
+    <div id="error-slot"></div>
+
+    <!-- Dashboard page -->
+    <section id="page-dashboard">
+      <div class="stat-grid" id="stat-grid"></div>
+
+      <div class="card announce-highlight-card">
+        <div class="baskol-header">
+          <div class="announce-highlight-title"><i class="ti ti-speakerphone"></i> آخرین اعلان‌ها</div>
+        </div>
+        <div id="dashboard-announce-list"></div>
+      </div>
+
+      <div class="card baskol-card">
+        <div class="baskol-header">
+          <div class="baskol-title"><i class="ti ti-alert-triangle"></i> این ماشین‌ها باسکول خالی ثبت کنند</div>
+          <span class="baskol-count" id="baskol-count">0</span>
+        </div>
+        <div id="baskol-list"></div>
+      </div>
+
+      <div class="panel-grid">
+        <div class="card">
+          <p class="card-title">توزیع وضعیت‌ها</p>
+          <div class="donut-wrap">
+            <svg viewBox="0 0 42 42" width="120" height="120" id="donut-chart" role="img" aria-label="نمودار توزیع وضعیت نوبت‌ها"></svg>
+            <div class="legend" id="donut-legend"></div>
+          </div>
+        </div>
+        <div class="card">
+          <p class="card-title">آخرین ورودها</p>
+          <div id="recent-table-wrap"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Iranian queue page -->
+    <section id="page-iranian" style="display:none;">
+      <div class="search-box"><i class="ti ti-search"></i><input type="text" id="search-iranian" placeholder="جستجو بر اساس نام راننده یا پلاک..."></div>
+      <div id="iranian-content"></div>
+    </section>
+
+    <!-- Iraqi entry page -->
+    <section id="page-iraqi" style="display:none;">
+      <div class="search-box"><i class="ti ti-search"></i><input type="text" id="search-iraqi" placeholder="جستجو بر اساس نام راننده یا پلاک..."></div>
+      <div id="iraqi-content"></div>
+    </section>
+
+    <!-- Announcements page -->
+    <section id="page-announcements" style="display:none;">
+      <div id="announcements-content"></div>
+    </section>
+
+    <!-- Loaded list page -->
+    <section id="page-loaded" style="display:none;">
+      <div class="search-box"><i class="ti ti-search"></i><input type="text" id="search-loaded" placeholder="جستجو بر اساس نام راننده یا پلاک..."></div>
+      <div id="loaded-content"></div>
+    </section>
+
+  </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="config.js?v=7"></script>
+<script src="app.js?v=7"></script>
+</body>
+</html>
